@@ -1,10 +1,6 @@
 package flp.csa;
 
 public class SimulatedAnnealing {
-    /*Performs simulated annealing by calling functions to calculate
-    energy and make moves on a state.  The temperature schedule for
-    annealing may be provided manually or estimated automatically.
-    */
 	
 	static double INITIAL_TEMPERATURE = 25000.0;
 	static double COOLING_STEPS = 50000;
@@ -21,7 +17,8 @@ public class SimulatedAnnealing {
 
 	private void ILSA(Model modelo) {
 		// TODO Auto-generated method stub
-		
+		current_solution = createInitialSolution();
+		best_solution = current_solution;
 	}
 	
 	private void ELSA(Model modelo) {
@@ -29,6 +26,10 @@ public class SimulatedAnnealing {
 		
 	}
 
+	private void createInitalSolution() {
+		
+	}
+	
 	public double getCurrent_solution() {
 		return current_solution;
 	}
