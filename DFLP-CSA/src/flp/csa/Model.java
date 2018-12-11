@@ -13,6 +13,7 @@ public class Model {
 	private int[] fixed_cost; //Costo asociado de abrir una facility en el lugar j
 	private int[] demand; //Demanda de cliente i
 	private double[][] demand_cost; //Costo asociado a suplir la demanda de un cliente desde un sitio j
+	private double solution = 0;
 	
 	/* Función a minimizar 
 	 * min f = sumatoria(fixed_cost[j]*X[j]) + sumatoria(sumatoria(demand[i]*demand_cost[i][j]*Y[i][j]))
@@ -174,5 +175,46 @@ public class Model {
 	public void setY(int[][] y) {
 		Y = y;
 	}
+	
+	public void iniciarRandom() {
+		int[] xs = new int[this.getJ()];	
+		for(int j = 0 ; j < this.getJ() ; j++) { //Se abren y cierran facilities de manera aleatoria
+			int random = (Math.random()<0.5)?0:1;
+			xs[j] = random;
+		}
+		this.setX(xs);
+		
+		int[][] ys = new int[this.getI()][this.getJ()];
+		for(int i = 0 ; i < this.getI() ; i++) {
+			for(int j = 0 ; j < this.getJ() ; j++) {
+				int random = (Math.random()<0.5)?0:1;
+				ys[i][j] = random;
+			}
+		}
+		this.setY(ys);
+	}
 
+	public double createInitialSolution(Model modelo) {
+		double sumatoria1 = 0, sumatoria2 = 0;
+		int[] xs = new int[modelo.getJ()];
+		int[] fixed = modelo.getFixed_cost();
+		
+		for(int j = 0 ; j < modelo.getJ() ; j++) { 
+			sumatoria1 = sumatoria1 + (fixed[j] * xs[j]); /*Sumatoria Fixed_cost x X */
+		}
+		
+		int[][] ys = new int[modelo.getI()][modelo.getJ()];
+		int[] demand = modelo.getDemand();
+		double[][] demand_cost = modelo.getDemand_cost();
+		
+		for(int i = 0 ; i < modelo.getI() ; i++) {
+			for(int j = 0 ; j < modelo.getJ() ; j++) {
+				sumatoria2 = sumatoria2 + (demand[i] * demand_cost[i][j] * ys[i][j]); /*Sumatoria demand x demand_cost x Y */
+			}
+		}
+		
+		solution = sumatoria1 + sumatoria2; /*Función a minimizar*/
+		
+		return solution;
+	}
 }
