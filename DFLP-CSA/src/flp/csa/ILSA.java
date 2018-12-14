@@ -1,6 +1,30 @@
 package flp.csa;
 
 public class ILSA {
+	static Model solucion_vecina;
+	public ILSA(Model modelo) {
+		solucion_vecina = selectOperator(modelo);
+	}
+	private Model selectOperator(Model modelo) {
+		Model s_prima = null;
+		boolean flag = false;
+		while(flag == false) {
+			int random = (Math.random()<0.5)?1:2;
+			System.out.println("Ilsa Operador --> "+random);
+			switch(random){
+				case 1:
+					s_prima = operator1(modelo);
+					if(s_prima != null) flag = true;
+				case 2:
+					s_prima = operator2(modelo);
+					if(s_prima != null) flag = true;			
+			}
+		}
+		return s_prima;
+	}
+	public Model getSol() {
+		return solucion_vecina;
+	}
 	public Model operator1(Model modelo) {
 		int[][] y = modelo.getY();
 		int[] pos_cerrada = new int[2];

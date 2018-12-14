@@ -3,10 +3,12 @@ package flp.csa;
 import java.util.Random;
 
 public class ELSA {
-	
+	static Model solucion_vecina;
 	public ELSA(Model modelo) {
-		Model solucion_vecina = null;
 		solucion_vecina = selectOperator(modelo);
+	}
+	public Model getSol() {
+		return solucion_vecina;
 	}
 	
 	private Model selectOperator(Model modelo) {
@@ -14,7 +16,7 @@ public class ELSA {
 		boolean flag = false;
 		while(flag == false) {
 			int random = (Math.random()<0.5)?1:3;
-			System.out.println("Operador --> "+random);
+			System.out.println("Elsa Operador --> "+random);
 			switch(random){
 				case 1:
 					s_prima = operator1(modelo);
@@ -125,7 +127,7 @@ public class ELSA {
 				int low = 0;
 				int high = 999;
 				int result = r.nextInt(high-low) + low;
-				System.out.println("cliente --> "+result);
+				//System.out.println("cliente --> "+result);
 				loop:
 				if(ys[result][pos_j] == 0) {
 					for(int j = 0 ; j < solucion_vecina.getJ() ; j++) {

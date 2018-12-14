@@ -111,6 +111,23 @@ public class Model {
 
 		}
 	}
+	public double funcion_objetivo() {
+        double sum1 = 0;
+        double sum2 = 0;
+        double result = 0;
+
+        for (int j = 0; j < J; j++) {
+            sum1 += fixed_cost[j] * X[j];
+        }
+
+        for (int i = 0; i < I; i++) {
+            for (int j = 0; j < J; j++) {
+                sum2 += demand[i] * demand_cost[i][j] * Y[i][j];
+            }
+        }
+
+        return result = sum1 + sum2;
+	}
 	
 	public int getI() {
 		return I;
