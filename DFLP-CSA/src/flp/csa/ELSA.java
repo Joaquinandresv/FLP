@@ -3,6 +3,7 @@ package flp.csa;
 import java.util.Random;
 
 public class ELSA {
+	static boolean global_flag = true;
 	static Model solucion_vecina;
 	public ELSA(Model modelo) {
 		solucion_vecina = selectOperator(modelo);
@@ -14,20 +15,27 @@ public class ELSA {
 	private Model selectOperator(Model modelo) {
 		Model s_prima = null;
 		boolean flag = false;
+		int range = (3 - 1) + 1;
 		while(flag == false) {
-			int random = (Math.random()<0.5)?1:3;
+			int random = (int) (Math.random() * range) + 1;
 			System.out.println("Elsa Operador --> "+random);
 			switch(random){
 				case 1:
 					s_prima = operator1(modelo);
-					if(s_prima != null) flag = true;
+					if(s_prima != null && global_flag != false) {
+						flag = true;
+					}
+					break;
 				case 2:
 					s_prima = operator2(modelo);
-					if(s_prima != null) flag = true;	
+					if(s_prima != null) {
+						flag = true;
+					}
+					break;
 				case 3:
 					s_prima = operator3(modelo);
 					flag = true;
-					
+					break;
 			}
 		}
 		return s_prima;
@@ -42,20 +50,18 @@ public class ELSA {
 		}
 		/* CAMBIAR GET J, POR M = ALLOWED MAXIMUM FACILITIES */
 		if(sumatoria < modelo.getJ()) {
+			int range = (99 - 0) + 1;
 			Model solucion_vecina = modelo;
 			boolean flag = false;
 			while(flag  == false) {
-				Random r = new Random();
-				int low = 0;
-				int high = 99;
-				int result = r.nextInt(high-low) + low;
+				int result = (int) (Math.random() * range);
+				System.out.println("-> "+result);
 				if(x[result] == 0) {
 					x[result] = 1;
 					solucion_vecina.setX(x);
-					actualizarSolucion(solucion_vecina,result);
+					global_flag = actualizarSolucion(solucion_vecina,result);
 					return solucion_vecina;
 				}
-				System.out.println(".");
 			}
 		}
 		return null;
@@ -83,7 +89,6 @@ public class ELSA {
 					actualizarSolucion(solucion_vecina,result);
 					return solucion_vecina;
 				}
-				System.out.println(".");
 			}
 		}
 		return null;
@@ -113,34 +118,34 @@ public class ELSA {
 		return solucion_vecina;
 	}
 	
-	private void actualizarSolucion(Model solucion_vecina, int pos_j) {
+	private boolean actualizarSolucion(Model solucion_vecina, int pos_j) {
 		int[] xs = solucion_vecina.getX();
 		int[][] ys = solucion_vecina.getY();
-		boolean flag = false;
+		int cliente_visitado = -1;
 		if(xs[pos_j] == 0) {
 			for(int i = 0 ; i < solucion_vecina.getI() ; i++) {
 				ys[i][pos_j] = 0;
 			}
+			solucion_vecina.setY(ys);
+			return true;
 		}else {
-			while(flag  == false) {
-				Random r = new Random();
-				int low = 0;
-				int high = 999;
-				int result = r.nextInt(high-low) + low;
-				//System.out.println("cliente --> "+result);
-				loop:
-				if(ys[result][pos_j] == 0) {
-					for(int j = 0 ; j < solucion_vecina.getJ() ; j++) {
-						if(ys[result][j] == 1) {
-							break loop;
+			for(int i = cliente_visitado+1; i < solucion_vecina.getI() ; i++) {
+					loop:
+						if(ys[i][pos_j] == 0) {
+							for(int j = 0 ; j < solucion_vecina.getJ() ; j++) {
+								if(ys[i][j] == 1) {
+									cliente_visitado = i;
+									break loop;
+								}
+							}
+							System.out.println("cliente que puede ser atendido"+i );
+							ys[i][pos_j] = 1;
+							solucion_vecina.setY(ys);
+							return true;
 						}
-					}
-					ys[result][pos_j] = 1;
-					flag = true;
-				}
 			}
+			return false;
 		}
-		solucion_vecina.setY(ys);
 	}
 	
 	private void actualizarSolucion(Model solucion_vecina, int pos_j, int pos_j_prima) {
@@ -153,7 +158,7 @@ public class ELSA {
 		while(flag  == false) {
 			Random r = new Random();
 			int low = 0;
-			int high = 99;
+			int high = 999;
 			int result = r.nextInt(high-low) + low;
 			loop:
 			if(ys[result][pos_j] == 0) {
@@ -165,7 +170,6 @@ public class ELSA {
 				ys[result][pos_j] = 1;
 				flag = true;
 			}
-			System.out.println("3-");
 		}
 		solucion_vecina.setY(ys);
 	}

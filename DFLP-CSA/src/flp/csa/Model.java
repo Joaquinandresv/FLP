@@ -296,4 +296,68 @@ public class Model {
 		}
 		this.setY(ys);
 	}
+	
+	public boolean checkFeasibilities() {
+		//RESTRICCIONES (3) Y (5)
+		//REVIAR RESTRICCION (3) MEJOR
+		/** RESTRICCIÓN(3) DEMANDA, TODA DEMANDA DE CADA CLIENTE DEBE SER ATENDIDA **/
+		boolean flag1 = false;
+		int clientes_atendidos = 0;
+		int[][] ys = this.getY();
+		for(int i = 0 ; i < this.getI() ; i++) {
+			innerloop:
+			for(int j = 0 ; j < this.getJ() ; j++) {
+				if(ys[i][j] == 1) {
+					clientes_atendidos++;
+					break innerloop;
+				}
+			}
+		}
+		
+		/** SI LOS CLIENTES ATENDIDOS ES ENREALIDAD EL NUMERO TOTAL DE CLIENTES */
+		/** TODOS LOS CLIENTES ATENDIDOS */
+		if(clientes_atendidos == this.getI()) {
+			flag1 = true;
+		}else {
+			flag1 = false;
+		}
+		
+		/** RESTRICCIÓN(5) CAPACIDAD DE LAS FACILITIES **/
+		boolean flag2 = false;
+		int[] capacidad_f = this.getCapacity();
+		int[] demanda_cliente = this.getDemand();
+		int demanda_facility;
+		int j;
+		int suma;
+		/** ACA RECORRO POR FACILITIES PRIMERO, PARA VER SI CADA UNA DE LAS FACILITIES NO SOBREPASA SU CAPACIDAD*/
+		loop:
+		for(j = 0 ; j < this.getJ() ; j++) { /** FACILITY **/
+			demanda_facility = 0;
+			suma = 0;
+			for(int i = 0 ; i < this.getI() ; i++) { /** CLIENT **/
+				suma = demanda_facility + demanda_cliente[i];
+				if(ys[i][j] == 1 && suma <= capacidad_f[j]) { 
+				/**Se checkea que no se sobre pase la capacidad de demanda maxima de la facility */
+					demanda_facility = demanda_facility + demanda_cliente[i];
+				}
+			}
+			//System.out.println("DEMANDA DE LA FACILITIY ["+j+"] : "+demanda_facility);
+			if(demanda_facility > capacidad_f[j]) { /**EN EL CASO DE QUE SE SOBREPASE LA DEMANDA */
+				break loop;
+			}/** EN CASO DE QUE NO SOBREPASE, SE SIGUE EL LOOP */
+		}
+		/** SI SE CUMPLE ESTE IF, SE DICE QUE EL LOOP SE CUMPLE */
+		/** POR ENDE SE CUMPLIRÍA QUE TODAS LAS FACILITIES NO SOBREPASAN SU CAPACIDAD MAXIMA */
+		if(j == 100) {
+			flag2 = true;
+		}else { /** EN EL OTRO CASO, ALGUNA FACILITY NO CUMPLE CON LA RESTRICCIÓN */
+			flag2 = false;
+		}
+		
+		if(flag1 == true && flag2 == true) { /** EN EL CASO QUE SE CUMPLAN LAS DOS RESTRICCIONES **/
+			return true;
+		}else {
+			return false;
+		}
+	}
 }
