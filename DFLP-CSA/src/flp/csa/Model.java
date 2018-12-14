@@ -177,21 +177,47 @@ public class Model {
 	}
 	
 	public void iniciarRandom() {
+		
+		/** SE ABREN Y CIERRAN FACILITIES DE MANERA ALEATORIA **/
 		int[] xs = new int[this.getJ()];	
-		for(int j = 0 ; j < this.getJ() ; j++) { //Se abren y cierran facilities de manera aleatoria
+		for(int j = 0 ; j < this.getJ() ; j++) { 
 			int random = (Math.random()<0.5)?0:1;
 			xs[j] = random;
 		}
 		this.setX(xs);
 		
+		/** LAS FACILITIES ABIERTAS SE LES ASIGNA CLIENTES A CUMPLIR SU DEMANDA **/
+		/** SIEMPRE Y CUANDO NO SE EXECEDA DE LA CAPACIDAD TOTAL DE LA FACILITY **/
 		int[][] ys = new int[this.getI()][this.getJ()];
+		int[] capacidad_f = this.getCapacity(); /** CAPACIDAD DE CADA FACILITY **/
+		int[] demanda_c = this.getDemand(); /** DEMANDA DE CADA CLIENTE */
+		int[] demanda_total = new int[this.getJ()];
+		int visitados;
+		int pos_ult_cliente_atendido = 0;
+
 		for(int i = 0 ; i < this.getI() ; i++) {
+			visitados = 0;
 			for(int j = 0 ; j < this.getJ() ; j++) {
-				int random = (Math.random()<0.5)?0:1;
-				ys[i][j] = random;
+				if(xs[j] == 1) {
+					int random = (Math.random()<0.5)?0:1;
+					if(random == 1 && visitados < 1) {
+						demanda_total[j] = demanda_total[j] + demanda_c[i];
+						if(demanda_total[j] <= capacidad_f[j]) {
+							ys[i][j] = 1;
+							visitados++;
+						}else {
+							ys[i][j] = 0;
+						}
+					}else {
+						ys[i][j] = 0;
+					}
+				}else {
+					ys[i][j] = 0;
+				}
 			}
 		}
 		this.setY(ys);
+		
 	}
 
 	public double createInitialSolution(Model modelo) {
@@ -216,5 +242,41 @@ public class Model {
 		solution = sumatoria1 + sumatoria2; /*Función a minimizar*/
 		
 		return solution;
+	}
+	
+	public void generateNewSolution(Model modelo) {
+		
+		/** LAS FACILITIES ABIERTAS SE LES ASIGNA CLIENTES A CUMPLIR SU DEMANDA **/
+		/** SIEMPRE Y CUANDO NO SE EXECEDA DE LA CAPACIDAD TOTAL DE LA FACILITY **/
+		int[] xs = this.getX();
+		int[][] ys = new int[this.getI()][this.getJ()];
+		int[] capacidad_f = this.getCapacity(); /** CAPACIDAD DE CADA FACILITY **/
+		int[] demanda_c = this.getDemand(); /** DEMANDA DE CADA CLIENTE */
+		int[] demanda_total = new int[this.getJ()];
+		int visitados;
+		int pos_ult_cliente_atendido = 0;
+
+		for(int i = 0 ; i < this.getI() ; i++) {
+			visitados = 0;
+			for(int j = 0 ; j < this.getJ() ; j++) {
+				if(xs[j] == 1) {
+					int random = (Math.random()<0.5)?0:1;
+					if(random == 1 && visitados < 1) {
+						demanda_total[j] = demanda_total[j] + demanda_c[i];
+						if(demanda_total[j] <= capacidad_f[j]) {
+							ys[i][j] = 1;
+							visitados++;
+						}else {
+							ys[i][j] = 0;
+						}
+					}else {
+						ys[i][j] = 0;
+					}
+				}else {
+					ys[i][j] = 0;
+				}
+			}
+		}
+		this.setY(ys);
 	}
 }
