@@ -218,8 +218,8 @@ public class Model {
 				if(xs[j] == 1) {
 					int random = (Math.random()<0.5)?0:1;
 					if(random == 1 && visitados < 1) {
-						demanda_total[j] = demanda_total[j] + demanda_c[i];
-						if(demanda_total[j] <= capacidad_f[j]) {
+						if(demanda_total[j] + demanda_c[i] <= capacidad_f[j]) {
+							demanda_total[j] = demanda_total[j] + demanda_c[i];
 							ys[i][j] = 1;
 							visitados++;
 						}else {

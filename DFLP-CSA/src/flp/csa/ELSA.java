@@ -18,7 +18,6 @@ public class ELSA {
 		int range = (3 - 1) + 1;
 		while(flag == false) {
 			int random = (int) (Math.random() * range) + 1;
-			System.out.println("Elsa Operador --> "+random);
 			switch(random){
 				case 1:
 					s_prima = operator1(modelo);
@@ -55,7 +54,6 @@ public class ELSA {
 			boolean flag = false;
 			while(flag  == false) {
 				int result = (int) (Math.random() * range);
-				System.out.println("-> "+result);
 				if(x[result] == 0) {
 					x[result] = 1;
 					solucion_vecina.setX(x);
@@ -138,7 +136,6 @@ public class ELSA {
 									break loop;
 								}
 							}
-							System.out.println("cliente que puede ser atendido"+i );
 							ys[i][pos_j] = 1;
 							solucion_vecina.setY(ys);
 							return true;
