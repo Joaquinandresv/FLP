@@ -5,10 +5,10 @@ import java.lang.Math;
 public class SimulatedAnnealing {
 	
 	static double INITIAL_TEMPERATURE = 10000.0;
-	static double FINAL_TEMPERATURE = 0;
+	static double FINAL_TEMPERATURE = 0.001;
 	static int N_1;
 	static int N_2;
-	static double COOLING_FACTOR = 0.9;
+	static double COOLING_FACTOR = 0.05;
 	static int steps = 1;
 	static boolean finish = false;
 	static Model current_solution;
@@ -35,6 +35,8 @@ public class SimulatedAnnealing {
 					N_1 = 5;//modelo.getJ();
 					N_2 = 8;//5*modelo.getI();
 					current_solution = modelo;
+					//System.out.printf("\nFO inicial: %f",current_solution.funcion_objetivo());
+					//Ti=current_solution.funcion_objetivo();
 					global_optimal_solution = current_solution;
 					steps=2;
 					break;
